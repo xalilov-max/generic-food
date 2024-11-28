@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-center">Foods</h1>
+<form method="get" class="d-flex mb-4">
+    <input type="text" name="q" class="form-control me-2" placeholder="Search foods..." value="{{ request.GET.q }}">
+    <button class="btn btn-primary" type="submit">Search</button>
+</form>
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for food in foods %}
+        <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ food.nomi }}</td>
+        <td>{{ food.food_type.nomi }}</td>
+        <td>${{ food.narxi }}</td>
+        <td>
+            <a href="{% url 'food_detail' food.id %}" class="btn btn-info btn-sm">View</a>
+            {% if user.has_perm "foods.change_food" %}
+                <a href="{% url 'food_update' food.id %}" class="btn btn-warning btn-sm">Edit</a>
+            {% endif %}
+            {% if user.has_perm "foods.delete_food" %}
+                <a href="{% url 'food_delete' food.id %}" class="btn btn-danger btn-sm">Delete</a>
+            {% endif %}
+        </td>
+    </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">No foods found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
